@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         subtree: true,
     });
 
-    setTimeout(() => searchBeta(document), 1);
+    setTimeout(() => searchBeta(document), 100);
 });
 
 console.log("Sigma loaded");
