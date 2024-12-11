@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const tagName = node.tagName;
                     if (tagName === 'DIV') {
                         searchSigma(node);
-                        setTimeout(() => searchBeta(node), 50);
+                        setTimeout(() => searchBeta(node), 100);
                     } else if (tagName === 'SIGMA') {
                         searchSigma(node, true);
                     } else if (tagName === 'BETA') {
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         subtree: true,
     });
 
-    setTimeout(() => searchBeta(document), 100);
+    setTimeout(() => searchBeta(document), 150);
 });
 
 console.log("Sigma loaded");
@@ -50,21 +50,37 @@ function searchBeta(x, single = false) {
         const attributes = Array.from(element.attributes)
             .filter(attr => attr.name !== 'template' && !attr.name.includes('astro'))
             .map(attr => ({ name: attr.name, value: attr.value }));
+        const names = attributes.map(attr => attr.name);
+        const values = attributes.map(attr => attr.value);
 
         let tempData = template.innerHTML;
-        template.querySelectorAll('issigma').forEach((issigma) => {
-            let prompt = issigma.getAttribute('data').split("=");
-            const data = attributes.find(z => z.name === prompt[0]);
 
-            if ((prompt.length === 1 && data) || (data && data.value === prompt[1])) {
+        template.querySelectorAll('issigma').forEach((issigma) => {
+            let prompt = issigma.getAttribute('data')
+
+            let wegetsolision = false;
+            try{
+                const res = new Function(...names, 'return '+prompt)(...values)
+                if(res) wegetsolision = res;
+            }catch {wegetsolision = false};
+
+            
+            if(wegetsolision){
                 tempData = tempData.replaceAll(issigma.querySelector('elsesigma').outerHTML, "");
                 tempData = tempData.replaceAll(issigma.querySelector('elifsigma').outerHTML, "");
-            } else {
+            }
+            else{
                 let found = false;
                 issigma.querySelectorAll('elifsigma').forEach((elifsigma) => {
-                    let elifPrompt = elifsigma.getAttribute('data').split("=");
-                    const elifData = attributes.find(z => z.name === elifPrompt[0]);
-                    if ((elifPrompt.length === 1 && elifData) || (elifData && elifData.value === elifPrompt[1])) {
+                    let elifPrompt = elifsigma.getAttribute('data')
+                    let wegetsolision = false;
+                    try{
+                    const res = new Function(...names, 'return '+elifPrompt)(...values)
+                    if(res) wegetsolision = res;
+                    }catch{
+                        wegetsolision = false;
+                    }
+                    if(wegetsolision){
                         found = true;
                         tempData = tempData.replaceAll(issigma.outerHTML, elifsigma.outerHTML);
                     }
@@ -75,8 +91,21 @@ function searchBeta(x, single = false) {
             }
         });
 
-        attributes.forEach(attr => {
-            tempData = tempData.replaceAll(`$[${attr.name}]`, attr.value);
+        tempData.match(/\$\[[^\]]+\]/g)?.forEach((match) => {
+            const key = match.slice(2, -1);
+            if(!names.includes(key)) return;
+            tempData = tempData.replaceAll(match, values[names.indexOf(key)]);
+        });
+        
+        tempData.match(/\!\[[^\]]+\]/g)?.forEach((match) => {
+            const key = match.slice(2, -1);
+            let data;
+            try{
+                const res = new Function(...names, 'return '+key)(...values)
+                data = res;
+            }catch{}
+            if(!data) return;
+            tempData = tempData.replaceAll(match, data);
         });
 
         element.innerHTML = tempData;
