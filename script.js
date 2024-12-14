@@ -1,3 +1,5 @@
+//Docs: https://github.com/DeveloperKubilay/sigmaWebFramework
+
 document.addEventListener("DOMContentLoaded", () => {
     searchSigma(document);
 
@@ -10,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const tagName = node.tagName;
                     if (tagName === 'DIV') {
                         searchSigma(node);
-                        setTimeout(() => searchBeta(node), 100);
+                        searchBeta(node)
                     } else if (tagName === 'SIGMA') {
                         searchSigma(node, true);
                     } else if (tagName === 'BETA') {
@@ -26,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
         subtree: true,
     });
 
-    setTimeout(() => searchBeta(document), 150);
+    searchBeta(document)
 });
 
 console.log("Sigma loaded");
@@ -38,6 +40,7 @@ function searchSigma(x, single = false) {
     sigmaElements.forEach((element) => {
         database[element.getAttribute('template')] = element;
         element.style.display = 'none';
+        element.remove();
     });
 }
 
@@ -105,9 +108,16 @@ function searchBeta(x, single = false) {
                 data = res;
             }catch{}
             if(!data) return;
+   
             tempData = tempData.replaceAll(match, data);
         });
 
         element.innerHTML = tempData;
+
+        element.querySelectorAll('img').forEach((sigima) => {
+            if(sigima.getAttribute('sigmaload'))
+                sigima.src = sigima.getAttribute('sigmaload');
+        })
+        
     });
 }
