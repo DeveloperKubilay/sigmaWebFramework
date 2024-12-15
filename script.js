@@ -65,12 +65,11 @@ function searchBeta(x, single = false) {
             try{
                 const res = new Function(...names, 'return '+prompt)(...values)
                 if(res) wegetsolision = res;
-            }catch {wegetsolision = false};
+            }catch { wegetsolision = false };
 
-            
             if(wegetsolision){
-                tempData = tempData.replaceAll(issigma.querySelector('elsesigma').outerHTML, "");
-                tempData = tempData.replaceAll(issigma.querySelector('elifsigma').outerHTML, "");
+                tempData = tempData.replaceAll(issigma.querySelector('elsesigma')?.outerHTML, "");
+                tempData = tempData.replaceAll(issigma.querySelector('elifsigma')?.outerHTML, "");
             }
             else{
                 let found = false;
@@ -89,7 +88,7 @@ function searchBeta(x, single = false) {
                     }
                 });
                 if (!found) {
-                    tempData = tempData.replaceAll(issigma.outerHTML, issigma.querySelector('elsesigma').outerHTML);
+                    tempData = tempData.replaceAll(issigma.outerHTML, issigma.querySelector('elsesigma')?.outerHTML);
                 }
             }
         });
