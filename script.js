@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     } else if (tagName === 'SIGMA') {
                         searchSigma(node, true);
                     } else if (tagName === 'BETA') {
-                        searchBeta(node);
+                        searchBeta(node,true);
                     }
                 });
             }
