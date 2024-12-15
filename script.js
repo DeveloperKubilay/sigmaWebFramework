@@ -68,8 +68,8 @@ function searchBeta(x, single = false) {
             }catch { wegetsolision = false };
 
             if(wegetsolision){
-                tempData = tempData.replaceAll(issigma.querySelector('elsesigma')?.outerHTML, "");
-                tempData = tempData.replaceAll(issigma.querySelector('elifsigma')?.outerHTML, "");
+                try{tempData = tempData.replaceAll(issigma.querySelector('elsesigma').outerHTML, "");}catch{}
+                try{tempData = tempData.replaceAll(issigma.querySelector('elifsigma').outerHTML, "");}catch{}
             }
             else{
                 let found = false;
@@ -88,7 +88,7 @@ function searchBeta(x, single = false) {
                     }
                 });
                 if (!found) {
-                    tempData = tempData.replaceAll(issigma.outerHTML, issigma.querySelector('elsesigma')?.outerHTML);
+                    try{tempData = tempData.replaceAll(issigma.outerHTML, issigma.querySelector('elsesigma').outerHTML);}catch{}
                 }
             }
         });
