@@ -16,7 +16,7 @@
             </elsesigma>
         </issigma>
 
-        <img sigmaload="$[pfp]" />
+        <img data-sigmaload="$[pfp]" />
 
 </sigma>
 
