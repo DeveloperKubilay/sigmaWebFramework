@@ -33,7 +33,7 @@
 const Layout = ./layout.html;
 const Test = ./test.html;
 -->
-<Layout pagetitle="sigmawebframework" evet="evetttttttt">
+<Layout pagetitle="sigmawebframework",evet="evetttttttt">
     <a href="https://www.google.com">link bunlar</a>
     <Test>
         <h1>deneme</h1>
