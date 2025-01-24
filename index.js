@@ -16,16 +16,18 @@ const ramdb = new Map();
 const route = require('./route');
 const wscode = `
             <script>
+document.addEventListener("DOMContentLoaded", async () => {
             var ws = new WebSocket('ws://localhost:${PORT}');
             ws.onmessage = function(event) {
                 if(event.data === 'reload') {
                     location.reload();
                 }
             };
+});
             </script>`
 
 app.use((req, res) => {
-    res.setHeader('Cache-Control', 'no-store');
+   // res.setHeader('Cache-Control', 'no-store');
     const tmp = route(req.url);
     req.url = tmp.router;
     const url = req.url === '/' ? '/index.html' : req.url;
@@ -33,7 +35,7 @@ app.use((req, res) => {
     let temp = path.join('./src', url);
     if(!fs.existsSync(temp)) temp = path.join('./src', url + '.html');
     if (ramdb.has(temp)) {
-        res.send(wscode + tmp.beforerender ? route(tmp.orjurl,ramdb.get(temp)) : ramdb.get(temp));
+        res.send(wscode + (tmp.beforerender ? route(tmp.orjurl,ramdb.get(temp)) : ramdb.get(temp)));
         return;
     } else {
         temp = path.join('./public', url);
@@ -130,12 +132,12 @@ function forwatcher(path) {
         });
         var a = editfile(path, file)
         ramdb.set(path, a);
-        wss.clients.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send('reload');
-            }
-        });
     } catch {}
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send('reload');
+        }
+    });
 }
 
 watcher.on('change', forwatcher).on("add", forwatcher).on("unlink", (path) => {
