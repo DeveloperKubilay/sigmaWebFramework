@@ -46,7 +46,7 @@ app.use((req, res) => {
             return;
         } else {
             console.log(c.red('404 File Not Found:'), c.yellow(temp.replace(".html", ""))); // Log the missing path
-            res.status(404).send(wscode+'<style>*{font-family:sans-serif;}</style><h1>Sigma Framework</h1><h2>404 File Not Found</h2>');
+            res.status(404).send(wscode+'<style>*{font-family:sans-serif;color:#ddd;background-color:#000}</style><h1>Sigma Framework</h1><h2>404 File Not Found</h2>');
         }
     }
 });
