@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </script>`
 
 app.use((req, res) => {
-   // res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Cache-Control', 'no-store');
     const tmp = route(req.url);
     req.url = tmp.router;
     const url = req.url === '/' ? '/index.html' : req.url;
@@ -35,7 +35,7 @@ app.use((req, res) => {
     let temp = path.join('./src', url);
     if(!fs.existsSync(temp)) temp = path.join('./src', url + '.html');
     if (ramdb.has(temp)) {
-        res.send(wscode + (tmp.beforerender ? route(tmp.orjurl,ramdb.get(temp)) : ramdb.get(temp)));
+        res.send(wscode + (tmp.render ? route(tmp.orjurl,ramdb.get(temp)) : ramdb.get(temp)));
         return;
     } else {
         temp = path.join('./public', url);
@@ -52,13 +52,12 @@ app.use((req, res) => {
 });
 
 const chokidar = require('chokidar');
-
 const watcher = chokidar.watch('./src', {
     ignored: [
         '**/node_modules/**',
         '**/.*'
     ],
-    persistent: true
+    persistent: true,
 });
 
 connected = {};
@@ -123,12 +122,15 @@ function editfile(nath, editedtext) {
 }
 
 function forwatcher(path) {
-    console.log(c.green(Date.now()), c.blue("Edited"), c.gray(path));
+    //console.log(c.green(Date.now()), c.blue("Edited"), c.gray(path));
     try {
         fs.accessSync(path);
         const file = fs.readFileSync(path, 'utf8');
         connected[path]?.forEach((item) => {
-            ramdb.set(item, editfile(item, fs.readFileSync(item, 'utf8')));
+            forwatcher(item);
+            //console.log(item)
+            //ramdb.set(item,fs.readFileSync(item, 'utf8'));  
+            //ramdb.set(item, editfile(item, fs.readFileSync(item, 'utf8')));
         });
         var a = editfile(path, file)
         ramdb.set(path, a);
@@ -165,4 +167,10 @@ server.listen(PORT, () => {
 const child_process = require('child_process');
 const packageJson = require('./package.json');
 if (packageJson.auto_open_url) child_process.exec('start http://localhost:' + PORT);
-child_process.exec('npx tailwindcss -i ./base.css -o ./public/tailwind.css --watch');
+var exc = child_process.exec('npx tailwindcss -i ./base.css -o ./public/tailwind.css --watch',{cwd:__dirname});
+/*exc.stdout.on('data', (data) => {
+    console.log(c.cyan(data));
+});
+exc.stderr.on('data', (data) => {
+    console.error(c.red(data));
+});*/
