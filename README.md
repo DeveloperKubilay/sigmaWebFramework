@@ -1,5 +1,10 @@
 # sigmaWebFramework
 
+# Installation
+```sh
+npm install express ws ansi-colors chokidar mime
+```
+
 # Create template
 ```html
 <sigma template="id"> You can think of it as a new class, give it a name
