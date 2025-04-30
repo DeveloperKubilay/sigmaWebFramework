@@ -1,6 +1,18 @@
-# sigmaWebFramework
+# 🔥 Sigma Web Framework 🔥
 
-# Installation
+## What is it? 🤔
+Sigma Web Framework is a **blazingly fast** ⚡ and **super lightweight** 🪶 templating engine for your web projects! Built for devs who want to code like absolute chads 💪 without the bloat of other frameworks.
+
+### Key Features ✨
+- 🚀 **Ultra-fast** templating system
+- 🧩 **Component-based** architecture with `<sigma>` tags
+- 🔄 **Hot-reloading** for instant feedback
+- 🎨 **Tailwind CSS** integration
+- 💅 **Zero config** setup - just clone and go!
+- 🔌 **Expressions** using `$[]` and `![]` syntax
+- 🔀 **Conditional rendering** with `issigma`, `elifsigma`, and `elsesigma`
+
+## Installation 📦
 ```sh
 git clone https://github.com/DeveloperKubilay/sigmaWebFramework
 cd sigmaWebFramework
@@ -9,59 +21,121 @@ code .
 node .
 ```
 
-# Create template
+## Quick Start Guide 🏃‍♂️
+
+### 1️⃣ Create a template
 ```html
-<sigma template="id"> You can think of it as a new class, give it a name
-
-        <issigma data="username=='Qplay' ? 1 : 0"> Working with eval
-            <h1> ![username ? "Hello" : "Hi"] </h1> Working with eval
-    
-            <elifsigma data="IsABot">
-              <h1> $[username] </h1> Static not eval 
-            </elifsigma>
-    
-            <elsesigma>
-                <h1> idk u </h1>
-            </elsesigma>
-        </issigma>
-
-        <img data-sigmaload="$[pfp]" />
-
+<sigma template="my-cool-component">
+  <div>Hello, $[name]! You're $[age] years old.</div>
 </sigma>
-
 ```
-# For use
 
+### 2️⃣ Use it anywhere
+```javascript
+document.body.innerHTML += window.beta("my-cool-component", {
+  name: "Sigma Chad",
+  age: 21
+});
+```
+
+### 3️⃣ Add conditionals for extra sauce 🌶️
 ```html
-<beta template="id" username="wasd" data="admin">
+<sigma template="profile-card">
+  <div class="card">
+    <h2>$[username]</h2>
+    <issigma data="isVerified">
+      <span class="badge">✓ Verified</span>
+    <elsesigma>
+      <span class="badge">Not Verified</span>
+    </elsesigma>
+    </issigma>
+  </div>
+</sigma>
 ```
 
-# Framework
+## Layout System 🏗️
 ```html
 <!--
-const Layout = ./layout.html;
-const Test = ./test.html;
+const Layout = ../SigmaFramework/Layouts/Layout.html;
 -->
-<Layout pagetitle="sigmawebframework",evet="evetttttttt">
-    <a href="https://www.google.com">link bunlar</a>
-    <Test>
-        <h1>deneme</h1>
-    </Test>
+
+<Layout>
+  <h1>My Awesome Content</h1>
+  <p>This goes in the slot!</p>
 </Layout>
 ```
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> </pagetitle> </title>
-    <link href="/tailwind.css" rel="stylesheet">
-</head>
-<body class="bg-black text-white">
-    </evet>
-    <br>
-    <slot></slot>
-</body>
-</html>
+
+## Why Sigma? 📈
+The important thing is not to follow trends, but to be efficient and get the job done! 💯
+
+---
+
+# 🔥 Sigma Web Framework 🔥 (Türkçe)
+
+## Bu nedir? 🤔
+Sigma Web Framework, web projeleriniz için **aşırı hızlı** ⚡ ve **süper hafif** 🪶 bir şablon motorudur! Diğer framework'lerin şişkinliği olmadan, gerçek sigma gibi kod yazmak isteyen geliştiriciler için tasarlandı 💪.
+
+### Ana Özellikler ✨
+- 🚀 **Ultra-hızlı** şablonlama sistemi
+- 🧩 `<sigma>` etiketleri ile **bileşen-tabanlı** mimari
+- 🔄 Anında geri bildirim için **otomatik yenileme**
+- 🎨 **Tailwind CSS** entegrasyonu
+- 💅 **Sıfır yapılandırma** - sadece klonla ve başla!
+- 🔌 `$[]` ve `![]` sözdizimi ile **İfadeler**
+- 🔀 `issigma`, `elifsigma` ve `elsesigma` ile **Koşullu render etme**
+
+## Kurulum 📦
+```sh
+git clone https://github.com/DeveloperKubilay/sigmaWebFramework
+cd sigmaWebFramework
+npm install
+code .
+node .
 ```
+
+## Hızlı Başlangıç Rehberi 🏃‍♂️
+
+### 1️⃣ Bir şablon oluştur
+```html
+<sigma template="harika-bileşenim">
+  <div>Merhaba, $[isim]! Sen $[yas] yaşındasın.</div>
+</sigma>
+```
+
+### 2️⃣ Her yerde kullan
+```javascript
+document.body.innerHTML += window.beta("harika-bileşenim", {
+  isim: "Sigma Chad",
+  yas: 21
+});
+```
+
+### 3️⃣ Ekstra lezzet için koşullar ekle 🌶️
+```html
+<sigma template="profil-kartı">
+  <div class="card">
+    <h2>$[kullaniciadi]</h2>
+    <issigma data="dogrulanmis">
+      <span class="badge">✓ Doğrulanmış</span>
+    <elsesigma>
+      <span class="badge">Doğrulanmamış</span>
+    </elsesigma>
+    </issigma>
+  </div>
+</sigma>
+```
+
+## Düzen Sistemi 🏗️
+```html
+<!--
+const Layout = ../SigmaFramework/Layouts/Layout.html;
+-->
+
+<Layout>
+  <h1>Müthiş İçeriğim</h1>
+  <p>Bu slota gider!</p>
+</Layout>
+```
+
+## Neden Sigma? 📈
+önemli olan trendleri takip etmek değil, verimlilik ve işi bitirmektir! 💯
