@@ -1,7 +1,8 @@
 {
   "name": "sigmawebframework",
   "version": "1.0.0",
-  "auto_open_url":"",
+  "auto_open_url": "",
+  "useTailwind": true,
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,7 +13,10 @@
   "description": "",
   "dependencies": {
     "ansi-colors": "^4.1.3",
-    "chokidar": "^4.0.3"
+    "chokidar": "^4.0.3",
+    "express": "^5.1.0",
+    "mime": "^2.5.2",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",

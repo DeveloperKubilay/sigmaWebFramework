@@ -8,13 +8,15 @@ const c = require('ansi-colors');
 const fs = require('fs');
 const app = express();
 const mime = require('mime');
+const child_process = require('child_process');
+const packageJson = require('./package.json');
 
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-const ramdb = new Map();
-const route = require('./route');
 const wscode = `
+${packageJson.useTailwind ? `<link rel="stylesheet" href="/tailwind.css">` : ''}
+<script src="/SigmaFramework/script.js"></script>
             <script>
 document.addEventListener("DOMContentLoaded", async () => {
             var ws = new WebSocket('ws://localhost:${PORT}');
@@ -26,6 +28,53 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
             </script>`
 
+
+if (!fs.existsSync('./public')) {
+    fs.mkdirSync('./public');
+    fs.mkdirSync('./public/js');
+}
+if (!fs.existsSync('./src')) fs.mkdirSync('./src');
+if (!fs.existsSync('./SigmaFramework')) {
+    fs.mkdirSync('./SigmaFramework');
+    fs.mkdirSync('./SigmaFramework/Layouts');
+    fs.copyFileSync('./script.js', "./SigmaFramework/script.js");
+    fs.copyFileSync('./route.js', "./SigmaFramework/route.js");
+    fs.copyFileSync('./LICENSE', "./SigmaFramework/LICENSE");
+    fs.copyFileSync('./README.md', "./SigmaFramework/README.md");
+    fs.copyFileSync('./Layout.html', "./SigmaFramework/Layouts/Layout.html");
+    fs.unlinkSync('./script.js');
+    fs.unlinkSync('./route.js');
+    fs.unlinkSync('./LICENSE');
+    fs.unlinkSync('./README.md');
+    fs.writeFileSync('./SigmaFramework/info.txt',
+        "If you need help you can look here\nhttps://github.com/DeveloperKubilay/sigmaWebFramework"
+    )
+    if (packageJson.useTailwind) {
+        fs.writeFileSync('./SigmaFramework/tailwind.config.js', `/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './src/**/*.{html,js}',
+    './public/**/*.{html,js}',
+    './SigmaFramework/Layouts/**/*.html'
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}`
+        );
+        fs.writeFileSync('./SigmaFramework/base.css', `@tailwind base;\n@tailwind components;\n@tailwind utilities;`);
+    }
+}
+
+
+const ramdb = new Map();
+const route = require('./SigmaFramework/route.js');
+
+app.get("/SigmaFramework/script.js", (req, res) => {
+    return res.sendFile(path.join(__dirname, 'SigmaFramework/script.js'));
+})
+
 app.use((req, res) => {
     res.setHeader('Cache-Control', 'no-store');
     const tmp = route(req.url);
@@ -33,26 +82,30 @@ app.use((req, res) => {
     const url = req.url === '/' ? '/index.html' : req.url;
 
     let temp = path.join('./src', url);
-    if(!fs.existsSync(temp)) temp = path.join('./src', url + '.html');
+    if (!fs.existsSync(temp)) temp = path.join('./src', url + '.html');
     if (ramdb.has(temp)) {
-        res.send(wscode + (tmp.render ? route(tmp.orjurl,ramdb.get(temp)) : ramdb.get(temp)));
+        res.send(wscode + (tmp.render ? route(tmp.orjurl, ramdb.get(temp)) : ramdb.get(temp)));
         return;
     } else {
         temp = path.join('./public', url);
-        if(!fs.existsSync(temp)) temp = path.join('./public', url + '.html');
+        if (!fs.existsSync(temp)) temp = path.join('./public', url + '.html');
         if (fs.existsSync(temp)) {
-            res.setHeader('Content-Type', mime.getType(temp) || 'application/octet-stream');
+            var type = 'application/octet-stream';
+            try {
+                type = mime.getType(temp) || 'application/octet-stream';
+            } catch { }
+            res.setHeader('Content-Type', type);
             res.sendFile(path.resolve(temp));
             return;
         } else {
             console.log(c.red('404 File Not Found:'), c.yellow(temp.replace(".html", ""))); // Log the missing path
-            res.status(404).send(wscode+'<style>*{font-family:sans-serif;color:#ddd;background-color:#000}</style><h1>Sigma Framework</h1><h2>404 File Not Found</h2>');
+            res.status(404).send(wscode + '<style>*{font-family:sans-serif;color:#ddd;background-color:#000}</style><h1>Sigma Framework</h1><h2>404 File Not Found</h2>');
         }
     }
 });
 
 const chokidar = require('chokidar');
-const watcher = chokidar.watch('./src', {
+const watcher = chokidar.watch(['./src', './SigmaFramework/Layouts'], {
     ignored: [
         '**/node_modules/**',
         '**/.*'
@@ -79,13 +132,13 @@ function editfile(nath, editedtext) {
     }
 
     Object.keys(mydb).forEach((key) => {
-        let tempdb, args = {},l=path.join(path.dirname(nath), mydb[key]);
+        let tempdb, args = {}, l = path.join(path.dirname(nath), mydb[key]);
         if (fs.existsSync(l)) {
             var text = fs.readFileSync(l, "utf8");
             text = text.split("<slot></slot>");
             tempdb = text;
         }
-       
+
         let tmp = editedtext.split("<" + key);
 
         tmp = tmp.map((item, c) => {
@@ -96,22 +149,22 @@ function editfile(nath, editedtext) {
                 var targs = (item.split('">', 1)[0] + '"')
                     .trim()
                     .split(",");
-                   
+
                 targs.forEach((x) => {
                     const t = x.split("=");
-                    args[t[0]] = t[1].replace('"', "").replace('"', "");                   
+                    args[t[0]] = t[1].replace('"', "").replace('"', "");
                 });
-                
+
                 item = item.split('">').slice(1).join('">');
             } else {
                 item = item.substring(1);
             }
             let temptext = [...tempdb];
-            
+
             temptext.splice(1, 0, item);
             return temptext.join("").replaceAll("</" + key + ">", "");
         });
-        
+
         tmp = tmp.join("");
         Object.keys(args).forEach((key) => {
             tmp = tmp.replaceAll("</" + key + ">", args[key]);
@@ -134,7 +187,7 @@ function forwatcher(path) {
         });
         var a = editfile(path, file)
         ramdb.set(path, a);
-    } catch {}
+    } catch { }
     wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
             client.send('reload');
@@ -164,13 +217,17 @@ server.listen(PORT, () => {
     console.log(c.green("Server is running on"), c.green.bold.underline(`http://localhost:${PORT}`));
 });
 
-const child_process = require('child_process');
-const packageJson = require('./package.json');
 if (packageJson.auto_open_url) child_process.exec('start http://localhost:' + PORT);
-var exc = child_process.exec('npx tailwindcss -i ./base.css -o ./public/tailwind.css --watch',{cwd:__dirname});
-/*exc.stdout.on('data', (data) => {
-    console.log(c.cyan(data));
-});
-exc.stderr.on('data', (data) => {
-    console.error(c.red(data));
-});*/
+if (packageJson.useTailwind) {
+    var exc = child_process.exec(
+        'npx tailwindcss --config ./SigmaFramework/tailwind.config.js ' +
+        '-i ./SigmaFramework/base.css -o ./public/tailwind.css --watch'
+        , { cwd: __dirname });
+    /*exc.stdout.on('data', (data) => {
+        console.log(c.cyan(data));
+    });
+    exc.stderr.on('data', (data) => {
+        console.error(c.red(data));
+    });*/
+
+}
