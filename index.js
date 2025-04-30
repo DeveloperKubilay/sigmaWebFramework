@@ -220,12 +220,21 @@ server.listen(PORT, () => {
     console.log(c.green("Server is running on"), c.green.bold.underline(`http://localhost:${PORT}`));
 });
 
-if (packageJson.auto_open_url) child_process.exec('start http://localhost:' + PORT);
+if (!packageJson.useTailwind && packageJson.auto_open_url) child_process.exec('start http://localhost:' + PORT);
 if (packageJson.useTailwind) {
     var exc = child_process.exec(
         'npx tailwindcss --config ./SigmaFramework/tailwind.config.js ' +
         '-i ./SigmaFramework/base.css -o ./public/tailwind.css --watch'
         , { cwd: __dirname });
+        if(packageJson.auto_open_url) {
+            const openUrlOnce = (data) => {
+                if(data.includes("Done")) {
+                    child_process.exec('start http://localhost:' + PORT);
+                    exc.stderr.off('data', openUrlOnce);
+                }
+            };
+            exc.stderr.on('data', openUrlOnce);
+        }
     /*exc.stdout.on('data', (data) => {
         console.log(c.cyan(data));
     });
