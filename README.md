@@ -5,6 +5,7 @@
 git clone https://github.com/DeveloperKubilay/sigmaWebFramework
 cd sigmaWebFramework
 npm install
+code .
 node .
 ```
 
