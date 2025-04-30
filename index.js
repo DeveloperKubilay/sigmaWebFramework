@@ -37,13 +37,16 @@ if (!fs.existsSync('./src')) fs.mkdirSync('./src');
 if (!fs.existsSync('./SigmaFramework')) {
     fs.mkdirSync('./SigmaFramework');
     fs.mkdirSync('./SigmaFramework/Layouts');
-    fs.copyFileSync('./script.js', "./SigmaFramework/script.js");
-    fs.copyFileSync('./route.js', "./SigmaFramework/route.js");
+    fs.copyFileSync('./singleFramework.js', "./SigmaFramework/script.js");
+    fs.copyFileSync('./src/route.js', "./SigmaFramework/route.js");
     fs.copyFileSync('./LICENSE', "./SigmaFramework/LICENSE");
     fs.copyFileSync('./README.md', "./SigmaFramework/README.md");
     fs.copyFileSync('./src/Layout.html', "./SigmaFramework/Layouts/Layout.html");
-    fs.unlinkSync('./script.js');
-    fs.unlinkSync('./route.js');
+    fs.copyFileSync('./src/example-script.js', "./public/js/script.js");
+    fs.unlinkSync('./singleFramework.js');
+    fs.unlinkSync('./src/route.js');
+    fs.unlinkSync('./src/example-script.js');
+    fs.unlinkSync('./src/Layout.html');
     fs.unlinkSync('./LICENSE');
     fs.unlinkSync('./README.md');
     fs.writeFileSync('./SigmaFramework/info.txt',
