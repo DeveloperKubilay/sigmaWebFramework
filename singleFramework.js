@@ -1,8 +1,7 @@
 //Docs: https://github.com/DeveloperKubilay/sigmaWebFramework
+    console.log("Sigma loaded");
 
-document.addEventListener("DOMContentLoaded", () => {
-    searchSigma(document);
-
+document.addEventListener('DOMContentLoaded', () => {
     const observer = new MutationObserver((mutationsList) => {
         for (const mutation of mutationsList) {
             if (mutation.type === 'childList') {
@@ -10,28 +9,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (node.nodeType !== Node.ELEMENT_NODE) return; 
 
                     const tagName = node.tagName;
-                    if (tagName === 'DIV') {
-                        searchSigma(node);
-                        searchBeta(node)
-                    } else if (tagName === 'SIGMA') {
-                        searchSigma(node, true);
-                    } else if (tagName === 'BETA') {
-                        searchBeta(node,true);
-                    }
+                    if (tagName === 'SIGMA') searchSigma(node, true); else { searchSigma(node);}
                 });
             }
         }
     });
 
+
     observer.observe(document.body, {
         childList: true,
         subtree: true,
     });
-
-    searchBeta(document)
+    searchSigma(document);
 });
-
-console.log("Sigma loaded");
 
 const database = {};
 
@@ -44,17 +34,17 @@ function searchSigma(x, single = false) {
     });
 }
 
-function searchBeta(x, single = false) {
-    const betaElements = single ? [x] : x.querySelectorAll('beta');
-    betaElements.forEach((element) => {
-        const template = database[element.getAttribute('template')];
-        if (!template) return;
 
-        const attributes = Array.from(element.attributes)
-            .filter(attr => attr.name !== 'template' && !attr.name.includes('astro'))
-            .map(attr => ({ name: attr.name, value: attr.value }));
-        const names = attributes.map(attr => attr.name);
-        const values = attributes.map(attr => attr.value);
+window.beta = function (mtemplate,mdata) {
+        const template = database[mtemplate];
+        if (!template) return;
+        const names = [], values = [];
+        if(!mdata) mdata = {};
+
+        for (const [key, value] of Object.entries(mdata)) {
+            names.push(key);
+            values.push(value);
+        }
 
         let tempData = template.innerHTML;
 
@@ -68,8 +58,8 @@ function searchBeta(x, single = false) {
             }catch { wegetsolision = false };
 
             if(wegetsolision){
-                try{tempData = tempData.replaceAll(issigma.querySelector('elsesigma').outerHTML, "");}catch{}
-                try{tempData = tempData.replaceAll(issigma.querySelector('elifsigma').outerHTML, "");}catch{}
+                try{tempData = tempData.replace(issigma.querySelector('elsesigma').outerHTML, "");}catch{}
+                try{tempData = tempData.replace(issigma.querySelector('elifsigma').outerHTML, "");}catch{}
             }
             else{
                 let found = false;
@@ -84,11 +74,14 @@ function searchBeta(x, single = false) {
                     }
                     if(wegetsolision){
                         found = true;
-                        tempData = tempData.replaceAll(issigma.outerHTML, elifsigma.outerHTML);
+                        tempData = tempData.replace(issigma.outerHTML, elifsigma.outerHTML);
                     }
                 });
                 if (!found) {
-                    try{tempData = tempData.replaceAll(issigma.outerHTML, issigma.querySelector('elsesigma').outerHTML);}catch{}
+                    try{
+                    if(issigma.querySelector('elsesigma')) tempData = tempData.replace(issigma.outerHTML, issigma.querySelector('elsesigma').outerHTML);
+                    else tempData = tempData.replace(issigma.outerHTML, "");
+                    }catch{}
                 }
             }
         });
@@ -99,6 +92,7 @@ function searchBeta(x, single = false) {
             tempData = tempData.replaceAll(match, values[names.indexOf(key)]);
         });
         
+        
         tempData.match(/\!\[[^\]]+\]/g)?.forEach((match) => {
             const key = match.slice(2, -1);
             let data;
@@ -107,16 +101,16 @@ function searchBeta(x, single = false) {
                 data = res;
             }catch{}
             if(!data) return;
-   
             tempData = tempData.replaceAll(match, data);
         });
+        let tempDiv = document.createElement('div');
+        tempDiv.innerHTML = tempData;
 
-        element.innerHTML = tempData;
-
-        element.querySelectorAll('img').forEach((sigima) => {
-            if(sigima.getAttribute('sigmaload'))
-                sigima.src = sigima.getAttribute('sigmaload');
+        tempDiv.querySelectorAll('img').forEach((sigima) => {
+            if(sigima.getAttribute('data-sigmaload'))
+                sigima.src = sigima.getAttribute('data-sigmaload');
         })
-        
-    });
+        const lk = tempDiv.innerHTML;
+        tempDiv.remove();
+        return lk;
 }
