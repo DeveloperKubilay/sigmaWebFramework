@@ -3,7 +3,8 @@
 # Installation
 ```sh
 git clone https://github.com/DeveloperKubilay/sigmaWebFramework
-npm install express ws ansi-colors chokidar mime
+cd sigmaWebFramework
+npm install
 node .
 ```
 
