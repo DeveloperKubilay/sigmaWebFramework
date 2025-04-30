@@ -42,10 +42,10 @@ if (!fs.existsSync('./SigmaFramework')) {
     fs.copyFileSync('./LICENSE', "./SigmaFramework/LICENSE");
     fs.copyFileSync('./README.md', "./SigmaFramework/README.md");
     fs.copyFileSync('./src/Layout.html', "./SigmaFramework/Layouts/Layout.html");
-    fs.copyFileSync('./src/example-script.js', "./public/js/script.js");
+    fs.copyFileSync('./src/script.js', "./public/js/script.js");
     fs.unlinkSync('./singleFramework.js');
     fs.unlinkSync('./src/route.js');
-    fs.unlinkSync('./src/example-script.js');
+    fs.unlinkSync('./src/script.js');
     fs.unlinkSync('./src/Layout.html');
     fs.unlinkSync('./LICENSE');
     fs.unlinkSync('./README.md');
