@@ -1,7 +1,7 @@
 {
   "name": "sigmawebframework",
   "version": "1.0.0",
-  "auto_open_url": "",
+  "auto_open_url": true,
   "useTailwind": true,
   "main": "index.js",
   "scripts": {
