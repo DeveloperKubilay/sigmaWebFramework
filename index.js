@@ -182,15 +182,22 @@ function forwatcher(path) {
     try {
         fs.accessSync(path);
         const file = fs.readFileSync(path, 'utf8');
-        connected[path]?.forEach((item) => {
-            forwatcher(item);
-            //console.log(item)
-            //ramdb.set(item,fs.readFileSync(item, 'utf8'));  
-            //ramdb.set(item, editfile(item, fs.readFileSync(item, 'utf8')));
-        });
+        if (connected[path]?.length > 0) {
+            connected[path].forEach((item) => {
+                try {
+                    const depContent = fs.readFileSync(item, 'utf8');
+                    const processedContent = editfile(item, depContent);
+                    ramdb.set(item, processedContent);
+                } catch (err) {
+                    console.error(c.red(`Error processing dependent file ${item}:`), err);
+                }
+            });
+        }
         var a = editfile(path, file)
         ramdb.set(path, a);
-    } catch { }
+    } catch (err) {
+        console.error(c.red(`Error processing file ${path}:`), err);
+    }
     wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
             client.send('reload');
