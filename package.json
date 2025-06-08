@@ -5,7 +5,9 @@
   "useTailwind": true,
   "main": "index.js",
   "scripts": {
-    "test": "node index.js",
+    "start": "node index.js",
+    "dev": "node index.js",
+    "debug": "node index.js",
     "installtw": "npm install tailwindcss -g"
   },
   "keywords": [],
