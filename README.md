@@ -1,5 +1,7 @@
 # 🔥 Sigma Web Framework 🔥
 
+![Sigma Web Framework](https://i.imgur.com/nOCxhiI.png)
+
 ## What is it? 🤔
 Sigma Web Framework is a **blazingly fast** ⚡ and **super lightweight** 🪶 templating engine for your web projects! Built for devs who want to code like absolute chads 💪 without the bloat of other frameworks.
 
