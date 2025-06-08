@@ -45,6 +45,7 @@ if (!fs.existsSync('./SigmaFramework')) {
     fs.copyFileSync('./src/script.js', "./public/js/script.js");
     fs.copyFileSync('./src/.gitignore', ".gitignore");
     fs.unlinkSync('./src/.gitignore');
+    fs.unlinkSync('./src/nOCxhiI.png');
     fs.unlinkSync('./singleFramework.js');
     fs.unlinkSync('./src/route.js');
     fs.unlinkSync('./src/script.js');
